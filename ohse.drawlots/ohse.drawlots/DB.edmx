@@ -1,0 +1,163 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="DB.Store" Provider="System.Data.SQLite.EF6" ProviderManifestToken="data source=D:\git.repo\ohse.drawlots\ohse.drawlots\ohse.drawlots\database.db;password=tndjq1" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="class">
+          <Key>
+            <PropertyRef Name="cid" />
+            <PropertyRef Name="year" />
+          </Key>
+          <Property Name="cid" Type="int" Nullable="false" />
+          <Property Name="year" Type="int" Nullable="false" />
+          <Property Name="class" Type="integer" Nullable="false" />
+        </EntityType>
+        <EntityType Name="forget">
+          <Key>
+            <PropertyRef Name="cid" />
+            <PropertyRef Name="datetime" />
+          </Key>
+          <Property Name="cid" Type="int" Nullable="false" />
+          <Property Name="datetime" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="history">
+          <Key>
+            <PropertyRef Name="sid" />
+            <PropertyRef Name="date" />
+            <PropertyRef Name="cid" />
+          </Key>
+          <Property Name="sid" Type="int" Nullable="false" />
+          <Property Name="date" Type="datetime" Nullable="false" />
+          <Property Name="cid" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="student">
+          <Key>
+            <PropertyRef Name="cid" />
+            <PropertyRef Name="sid" />
+          </Key>
+          <Property Name="cid" Type="int" Nullable="false" />
+          <Property Name="sid" Type="int" Nullable="false" />
+          <Property Name="num" Type="int" Nullable="false" />
+          <Property Name="name" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityContainer Name="DBStoreContainer">
+          <EntitySet Name="class" EntityType="Self.class" store:Type="Tables" />
+          <EntitySet Name="forget" EntityType="Self.forget" store:Type="Tables" />
+          <EntitySet Name="history" EntityType="Self.history" store:Type="Tables" />
+          <EntitySet Name="student" EntityType="Self.student" store:Type="Tables" />
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="DB" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="class">
+          <Key>
+            <PropertyRef Name="cid" />
+            <PropertyRef Name="year" />
+          </Key>
+          <Property Name="cid" Type="Int32" Nullable="false" />
+          <Property Name="year" Type="Int32" Nullable="false" />
+          <Property Name="class1" Type="Int64" Nullable="false" />
+        </EntityType>
+        <EntityType Name="forget">
+          <Key>
+            <PropertyRef Name="cid" />
+            <PropertyRef Name="datetime" />
+          </Key>
+          <Property Name="cid" Type="Int32" Nullable="false" />
+          <Property Name="datetime" Type="DateTime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="history">
+          <Key>
+            <PropertyRef Name="sid" />
+            <PropertyRef Name="date" />
+            <PropertyRef Name="cid" />
+          </Key>
+          <Property Name="sid" Type="Int32" Nullable="false" />
+          <Property Name="date" Type="DateTime" Nullable="false" />
+          <Property Name="cid" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="student">
+          <Key>
+            <PropertyRef Name="cid" />
+            <PropertyRef Name="sid" />
+          </Key>
+          <Property Name="cid" Type="Int32" Nullable="false" />
+          <Property Name="sid" Type="Int32" Nullable="false" />
+          <Property Name="num" Type="Int32" Nullable="false" />
+          <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+        </EntityType>
+        <EntityContainer Name="databaseEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="class" EntityType="Self.class" />
+          <EntitySet Name="forget" EntityType="Self.forget" />
+          <EntitySet Name="history" EntityType="Self.history" />
+          <EntitySet Name="student" EntityType="Self.student" />
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="DBStoreContainer" CdmEntityContainer="databaseEntities">
+          <EntitySetMapping Name="class">
+            <EntityTypeMapping TypeName="DB.class">
+              <MappingFragment StoreEntitySet="class">
+                <ScalarProperty Name="cid" ColumnName="cid" />
+                <ScalarProperty Name="year" ColumnName="year" />
+                <ScalarProperty Name="class1" ColumnName="class" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="forget">
+            <EntityTypeMapping TypeName="DB.forget">
+              <MappingFragment StoreEntitySet="forget">
+                <ScalarProperty Name="cid" ColumnName="cid" />
+                <ScalarProperty Name="datetime" ColumnName="datetime" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="history">
+            <EntityTypeMapping TypeName="DB.history">
+              <MappingFragment StoreEntitySet="history">
+                <ScalarProperty Name="cid" ColumnName="cid" />
+                <ScalarProperty Name="sid" ColumnName="sid" />
+                <ScalarProperty Name="date" ColumnName="date" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="student">
+            <EntityTypeMapping TypeName="DB.student">
+              <MappingFragment StoreEntitySet="student">
+                <ScalarProperty Name="cid" ColumnName="cid" />
+                <ScalarProperty Name="sid" ColumnName="sid" />
+                <ScalarProperty Name="num" ColumnName="num" />
+                <ScalarProperty Name="name" ColumnName="name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="없음" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

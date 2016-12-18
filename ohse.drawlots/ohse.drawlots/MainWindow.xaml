@@ -5,8 +5,47 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ohse.drawlots"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MainWindow" Height="393.629" Width="598.684" FontSize="24" WindowState="Maximized" Closing="MainWindow_OnClosing">
     <Grid>
-        
+        <Grid.ContextMenu>
+            <ContextMenu Name="studentCM">
+                <ContextMenu.ItemsSource>
+                    <CompositeCollection>
+                        <MenuItem Header="원상복구" Click="MenuItem_OnClick"></MenuItem>
+                    </CompositeCollection>
+                </ContextMenu.ItemsSource>
+            </ContextMenu>
+        </Grid.ContextMenu>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="100"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Orientation="Horizontal">
+            <Label>반 선택 :</Label>
+            <ComboBox DisplayMemberPath="class1" Name="ClassComboBox" SelectionChanged="ClassComboBox_OnSelectionChanged">
+            </ComboBox>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="2">
+            <Button Margin="5,0,0,0" Click="OpenStudentManagement">학생 관리</Button>
+            <Button Margin="5,0,0,0" Click="OpenHistoryManagement">기록 관리</Button>
+        </StackPanel>
+        <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+            <WrapPanel Margin="10" Background="BlanchedAlmond" Name="NamePanel">
+            </WrapPanel>
+        </ScrollViewer>
+        <Button Grid.Row="1" Grid.Column="1" Click="DrawLots">
+            <TextBlock TextWrapping="Wrap">제비뽑기</TextBlock>
+        </Button>
+        <Label Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="500">
+            <Viewbox StretchDirection="DownOnly" Stretch="Uniform">
+                <ContentControl Name="Result"/>
+            </Viewbox>
+            <!--<TextBlock TextWrapping="Wrap" Name="Result"></TextBlock>-->
+        </Label>
     </Grid>
 </Window>
