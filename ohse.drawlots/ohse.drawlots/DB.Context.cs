@@ -29,5 +29,6 @@ namespace ohse.drawlots
         public virtual DbSet<forget> forget { get; set; }
         public virtual DbSet<history> history { get; set; }
         public virtual DbSet<student> student { get; set; }
+        public virtual DbSet<group> group { get; set; }
     }
 }

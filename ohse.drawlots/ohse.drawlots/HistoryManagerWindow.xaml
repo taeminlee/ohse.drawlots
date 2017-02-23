@@ -1,0 +1,13 @@
+﻿<Window x:Class="ohse.drawlots.HistoryManagerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ohse.drawlots"
+        mc:Ignorable="d"
+        Title="HistoryManagerWindow" Height="307.479" Width="562.604" Loaded="Window_Loaded">
+    <Window.Resources>
+        <CollectionViewSource x:Key="historyViewSource" d:DesignSource="{d:DesignInstance {x:Type local:history}, CreateList=True}"/>
+    </Window.Resources>
+    <Grid DataContext="{StaticResource historyViewSource}"/>
+</Window>

@@ -22,6 +22,15 @@
           <Property Name="cid" Type="int" Nullable="false" />
           <Property Name="datetime" Type="datetime" Nullable="false" />
         </EntityType>
+        <EntityType Name="group">
+          <Key>
+            <PropertyRef Name="cid" />
+            <PropertyRef Name="gid" />
+          </Key>
+          <Property Name="cid" Type="int" Nullable="false" />
+          <Property Name="gid" Type="int" Nullable="false" />
+          <Property Name="name" Type="varchar" MaxLength="255" Nullable="false" />
+        </EntityType>
         <EntityType Name="history">
           <Key>
             <PropertyRef Name="sid" />
@@ -41,10 +50,12 @@
           <Property Name="sid" Type="int" Nullable="false" />
           <Property Name="num" Type="int" Nullable="false" />
           <Property Name="name" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="gid" Type="int" Nullable="false" />
         </EntityType>
         <EntityContainer Name="DBStoreContainer">
           <EntitySet Name="class" EntityType="Self.class" store:Type="Tables" />
           <EntitySet Name="forget" EntityType="Self.forget" store:Type="Tables" />
+          <EntitySet Name="group" EntityType="Self.group" store:Type="Tables" />
           <EntitySet Name="history" EntityType="Self.history" store:Type="Tables" />
           <EntitySet Name="student" EntityType="Self.student" store:Type="Tables" />
         </EntityContainer>
@@ -88,13 +99,24 @@
           <Property Name="sid" Type="Int32" Nullable="false" />
           <Property Name="num" Type="Int32" Nullable="false" />
           <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="gid" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityContainer Name="databaseEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="class" EntityType="Self.class" />
           <EntitySet Name="forget" EntityType="Self.forget" />
           <EntitySet Name="history" EntityType="Self.history" />
           <EntitySet Name="student" EntityType="Self.student" />
+          <EntitySet Name="group" EntityType="DB.group" />
         </EntityContainer>
+        <EntityType Name="group">
+          <Key>
+            <PropertyRef Name="cid" />
+            <PropertyRef Name="gid" />
+          </Key>
+          <Property Name="cid" Type="Int32" Nullable="false" />
+          <Property Name="gid" Type="Int32" Nullable="false" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -130,10 +152,20 @@
           <EntitySetMapping Name="student">
             <EntityTypeMapping TypeName="DB.student">
               <MappingFragment StoreEntitySet="student">
+                <ScalarProperty Name="gid" ColumnName="gid" />
                 <ScalarProperty Name="cid" ColumnName="cid" />
                 <ScalarProperty Name="sid" ColumnName="sid" />
                 <ScalarProperty Name="num" ColumnName="num" />
                 <ScalarProperty Name="name" ColumnName="name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="group">
+            <EntityTypeMapping TypeName="DB.group">
+              <MappingFragment StoreEntitySet="group">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="gid" ColumnName="gid" />
+                <ScalarProperty Name="cid" ColumnName="cid" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

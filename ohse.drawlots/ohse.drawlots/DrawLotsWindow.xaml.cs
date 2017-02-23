@@ -28,7 +28,8 @@ namespace ohse.drawlots
     {
         
         Random rand = new Random();
-        private student cStudent = null;
+        private object cObj = null;
+        private List<@group> pickedGroups = new List<@group>();
 
         private int? cid
         {
@@ -53,6 +54,7 @@ namespace ohse.drawlots
             S.DB.forget.Load();
             S.DB.history.Load();
             S.DB.student.Load();
+            S.DB.group.Load();
         }
 
         private void GenerateRandomData()
@@ -73,9 +75,17 @@ namespace ohse.drawlots
                         {
                             cid = S.DB.@class.Local.Count - 1,
                             sid = S.DB.student.Local.Count,
+                            gid = j/5,
                             name = GetRandomName(),
                             num = j + 1
                         });
+                        if(j%5 == 0)
+                            S.DB.group.Local.Add(new @group()
+                            {
+                                cid = S.DB.@class.Local.Count - 1,
+                                gid = j/5,
+                                name = $"{(j / 5) + 1}조",
+                            });
                     }
                 }
                 S.DB.SaveChanges();
@@ -92,64 +102,129 @@ namespace ohse.drawlots
         {
             ClassComboBox.ItemsSource = S.DB.@class.Local;
         }
-
+        
         private void ClassComboBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             LoadStudents();
+            LoadGroups();
         }
 
         private void LoadStudents()
         {
-            NamePanel.Children.Clear();
-            student[] students = GetClassStudent();
-            List<history> histories = GetHistories();
-            foreach (var s in students)
+            LoadEntities(NamePanel, GetClassStudents(), (o) =>
+            {
+                return GetHistories().Exists(history => history.sid == ((student)o).sid);
+            });
+        }
+
+        private void LoadGroups()
+        {
+            LoadEntities(GroupPanel, GetClassGroups(), (o) =>
+            {
+                return pickedGroups.Exists(g => g.Equals(o));
+            });
+        }
+
+        private void LoadEntities(WrapPanel panel, object[] objs, Func<object, bool> existFunc)
+        {
+            panel.Children.Clear();
+            foreach (var o in objs)
             {
                 Brush b = Brushes.AliceBlue;
-                if (histories.Exists(history => history.sid == s.sid))
+                if (existFunc(o))
                 {
                     b = Brushes.Khaki;
                 }
                 var toggleBtn = new ToggleButton()
                 {
-                    Content = $"{s.num:D2}. {s.name}",
-                    Tag = s,
+                    Content = GetName(o),
+                    Tag = o,
                     Margin = new Thickness(10),
                     Padding = new Thickness(10),
                     Background = b,
-                    ContextMenu = studentCM
+                    ContextMenu = studentCM,
                 };
-                toggleBtn.ContextMenuOpening += (sender, args) => cStudent = (student) toggleBtn.Tag;
-                toggleBtn.ContextMenuClosing += (sender, args) => cStudent = null;
-                NamePanel.Children.Add(toggleBtn);
+                
+                toggleBtn.ContextMenuOpening += (sender, args) => cObj = toggleBtn.Tag;
+                toggleBtn.ContextMenuClosing += (sender, args) => cObj = null;
+                panel.Children.Add(toggleBtn);
             }
         }
 
-        private student[] GetClassStudent()
-        {
-            student[] students = S.DB.student.Where(student => student.cid == cid).ToArray();
-            return students;
-        }
+        private student[] GetClassStudents() => S.DB.student.Where(student => student.cid == cid).ToArray();
+        
+        private @group[] GetClassGroups() => S.DB.group.Where(group => group.cid == cid).ToArray();
 
         private void DrawLots(object sender, RoutedEventArgs e)
         {
             student[] sPool = GetStudentPool();
             student s = sPool[rand.Next(sPool.Length)];
-            S.DB.history.Add(new history()
-            {
-                sid = s.sid,
-                cid = s.cid,
-                date = DateTime.Now,
-            });
-            S.DB.SaveChanges();
 
-            ShowDynamicName(sPool, s);
+            ShowDynamicResults(sPool, s, new Action(() =>
+            {
+                S.DB.history.Add(new history()
+                {
+                    sid = s.sid,
+                    cid = s.cid,
+                    date = DateTime.Now,
+                });
+                S.DB.SaveChanges();
+            }), new Action(LoadStudents));
+        }
+
+        private void SelGroup(object sender, RoutedEventArgs e)
+        {
+            @group[] gPool = GetGroupPool();
+            @group g = gPool[rand.Next(gPool.Length)];
+
+            ShowDynamicResults(gPool, g, new Action(() =>
+            {
+                if(pickedGroups.Contains(g) == false)
+                    pickedGroups.Add(g);
+            }), new Action(() =>
+            {
+                SelectStudentGroup(g);
+                LoadGroups();
+            }));
+        }
+
+        private void SelectStudentGroup(@group g)
+        {
+            student[] ss = S.DB.student.Where(s => s.cid == cid && s.gid == g.gid).ToArray();
+            var panel = NamePanel;
+            List<object> objs = new List<object>();
+            foreach (object obj in panel.Children)
+            {
+                if (obj is ToggleButton)
+                {
+                    if (((ToggleButton) obj).Tag is student)
+                    {
+                        student s = ((ToggleButton) obj).Tag as student;
+                        ((ToggleButton) obj).IsChecked = ss.Contains(s);
+                    }
+                }
+            }
         }
 
         private int duration = 0;
         private Timer t = null;
 
-        private void ShowDynamicName(student[] sPool, student student)
+        private string GetName(object obj)
+        {
+            if (obj is student)
+            {
+                student s = ((student) obj);
+                return $"{s.num:D2}. {s.name}";
+            }
+            if (obj is @group)
+            {
+                @group g = ((@group) obj);
+                return $"{g.name}";
+            }
+            return "";
+        }
+
+        private void ShowDynamicResults(object[] sPool, object rst, Delegate dbDelegate, Delegate callback)
         {
             if(t != null)
                 t.Dispose();
@@ -162,7 +237,7 @@ namespace ohse.drawlots
                     Dispatcher.BeginInvoke((Action) (() =>
                     {
                         var s = sPool[rand.Next(sPool.Length)];
-                        Result.Content = $"{s.num:D2}. {s.name}";
+                        Result.Content = GetName(s);
                         Result.Foreground = PickBrush();
                     }));
                 }
@@ -172,10 +247,11 @@ namespace ohse.drawlots
                     {
                         Result.Dispatcher.BeginInvoke(DispatcherPriority.Send, (Action) (() =>
                         {
-                            Result.Content = $"{student.num:D2}. {student.name}";
+                            dbDelegate.DynamicInvoke();
+                            Result.Content = GetName(rst);
                             Result.Foreground = Brushes.Black;
                             t.Dispose();
-                            LoadStudents();
+                            callback.DynamicInvoke();
                         }));
                     }
                 }
@@ -200,28 +276,39 @@ namespace ohse.drawlots
 
         private student[] GetStudentPool()
         {
-            List<student> students = new List<student>();
-            foreach (object obj in NamePanel.Children)
+            return GetObjectPool(NamePanel, GetClassStudents(), o => GetHistories().Exists(history => history.sid == ((student)o).sid)).Cast<student>().ToArray();
+        }
+
+        private @group[] GetGroupPool()
+        {
+            return GetObjectPool(GroupPanel, GetClassGroups(), o => pickedGroups.Exists(g => g.Equals(o))).Cast<@group>().ToArray();
+        }
+
+        private List<object> GetObjectPool(WrapPanel panel, object[] classObjs, Func<object, bool> existFunc)
+        {
+            //List<student> students = new List<student>();
+            List<object> objs = new List<object>();
+            foreach (object obj in panel.Children)
             {
                 if (obj is ToggleButton)
                 {
                     if (((ToggleButton)obj).IsChecked == true)
                     {
-                        students.Add((student)((ToggleButton)obj).Tag);
+                        objs.Add(((ToggleButton)obj).Tag);
                     }
                 }
             }
-            if (students.Count == 0)
-                students.AddRange(GetClassStudent());
+            if (objs.Count == 0)
+                objs.AddRange(classObjs);
 
             List<history> histories = GetHistories();
 
-            if (students.TrueForAll(student => histories.Exists(history => history.sid == student.sid)) == false)
+            if (objs.TrueForAll(obj => existFunc(obj)) == false)
             {
-                students.RemoveAll(student => histories.Exists(history => history.sid == student.sid));
+                objs.RemoveAll(obj => existFunc(obj));
             }
 
-            return students.ToArray();
+            return objs;
         }
 
         private List<history> GetHistories()
@@ -242,12 +329,21 @@ namespace ohse.drawlots
 
         private void MenuItem_OnClick(object sender, RoutedEventArgs e)
         {
-            if (cStudent != null)
+            if (cObj != null)
             {
-                var hl = GetHistories();
-                var h = hl.FirstOrDefault(history => history.sid == cStudent.sid);
-                if (h != null) S.DB.history.Local.Remove(h);
-                LoadStudents();
+                if (cObj is student)
+                {
+                    student s = (student) cObj;
+                    var hl = GetHistories();
+                    var h = hl.FirstOrDefault(history => history.sid == s.sid);
+                    if (h != null) S.DB.history.Local.Remove(h);
+                    LoadStudents();
+                }
+                else if (cObj is @group)
+                {
+                    pickedGroups.Remove((group) cObj);
+                    LoadGroups();
+                }
             }
         }
 
@@ -257,14 +353,23 @@ namespace ohse.drawlots
             lw.ShowDialog();
         }
 
+        private void OpenGroupManagement(object sender, RoutedEventArgs e)
+        {
+            new GroupManagerWindow().ShowDialog();
+        }
+
         private void OpenHistoryManagement(object sender, RoutedEventArgs e)
         {
-            
+            new HistoryManagerWindow().ShowDialog();
         }
 
         private void MainWindow_OnClosing(object sender, CancelEventArgs e)
         {
             Application.Current.Shutdown();
         }
+
+        
+
+        
     }
 }

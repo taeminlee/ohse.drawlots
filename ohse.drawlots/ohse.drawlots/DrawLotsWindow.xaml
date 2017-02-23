@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ohse.drawlots"
         mc:Ignorable="d"
-        Title="MainWindow" Height="393.629" Width="598.684" FontSize="24" WindowState="Maximized" Closing="MainWindow_OnClosing">
+        Title="ohse.drawlots aka 제비 뽑기" Height="460.142" Width="784.049" FontSize="24" WindowState="Maximized" Closing="MainWindow_OnClosing">
     <Grid>
         <Grid.ContextMenu>
             <ContextMenu Name="studentCM">
@@ -18,6 +18,7 @@
         </Grid.ContextMenu>
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>
+            <RowDefinition Height="2*"/>
             <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -32,14 +33,22 @@
         </StackPanel>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="2">
             <Button Margin="5,0,0,0" Click="OpenStudentManagement">학생 관리</Button>
+            <Button Margin="5,0,0,0" Click="OpenGroupManagement">조 관리</Button>
             <Button Margin="5,0,0,0" Click="OpenHistoryManagement">기록 관리</Button>
         </StackPanel>
         <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
             <WrapPanel Margin="10" Background="BlanchedAlmond" Name="NamePanel">
             </WrapPanel>
         </ScrollViewer>
-        <Button Grid.Row="1" Grid.Column="1" Click="DrawLots">
+        <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+            <WrapPanel Margin="10" Background="Lavender" Name="GroupPanel">
+            </WrapPanel>
+        </ScrollViewer>
+        <Button Grid.Row="1" Grid.Column="1" Click="DrawLots" Margin="0,10,0,10">
             <TextBlock TextWrapping="Wrap">제비뽑기</TextBlock>
+        </Button>
+        <Button Grid.Row="2" Grid.Column="1" Click="SelGroup" Margin="0,10,0,10">
+            <TextBlock TextWrapping="Wrap">조 추첨</TextBlock>
         </Button>
         <Label Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="500">
             <Viewbox StretchDirection="DownOnly" Stretch="Uniform">

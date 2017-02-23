@@ -8,6 +8,6 @@ namespace ohse.drawlots
 {
     internal static class S
     {
-        internal static databaseEntities DB = new databaseEntities();
+        internal static databaseEntities DB = new databaseEntities(DBConn.GetConnStr());
     }
 }

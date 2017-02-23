@@ -12,13 +12,10 @@ namespace ohse.drawlots
     using System;
     using System.Collections.Generic;
     
-    public partial class student
+    public partial class group
     {
-        public string idName => $"{num}. {name}";
         public int cid { get; set; }
-        public int sid { get; set; }
-        public int num { get; set; }
-        public string name { get; set; }
         public int gid { get; set; }
+        public string name { get; set; }
     }
 }
