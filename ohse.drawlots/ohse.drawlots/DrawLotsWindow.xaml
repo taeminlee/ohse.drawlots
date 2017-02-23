@@ -7,15 +7,6 @@
         mc:Ignorable="d"
         Title="ohse.drawlots aka 제비 뽑기" Height="460.142" Width="784.049" FontSize="24" WindowState="Maximized" Closing="MainWindow_OnClosing">
     <Grid>
-        <Grid.ContextMenu>
-            <ContextMenu Name="studentCM">
-                <ContextMenu.ItemsSource>
-                    <CompositeCollection>
-                        <MenuItem Header="원상복구" Click="MenuItem_OnClick"></MenuItem>
-                    </CompositeCollection>
-                </ContextMenu.ItemsSource>
-            </ContextMenu>
-        </Grid.ContextMenu>
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>
             <RowDefinition Height="2*"/>
@@ -35,13 +26,32 @@
             <Button Margin="5,0,0,0" Click="OpenStudentManagement">학생 관리</Button>
             <Button Margin="5,0,0,0" Click="OpenGroupManagement">조 관리</Button>
             <Button Margin="5,0,0,0" Click="OpenHistoryManagement">기록 관리</Button>
+            <Button Margin="5,0,0,0" Click="NewStage">판 새로 짜기</Button>
         </StackPanel>
         <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
             <WrapPanel Margin="10" Background="BlanchedAlmond" Name="NamePanel">
+                <WrapPanel.ContextMenu>
+                    <ContextMenu Name="studentCM">
+                        <ContextMenu.ItemsSource>
+                            <CompositeCollection>
+                                <MenuItem Header="원상복구" Click="MenuItem_OnClick"></MenuItem>
+                            </CompositeCollection>
+                        </ContextMenu.ItemsSource>
+                    </ContextMenu>
+                </WrapPanel.ContextMenu>
             </WrapPanel>
         </ScrollViewer>
         <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
             <WrapPanel Margin="10" Background="Lavender" Name="GroupPanel">
+                <WrapPanel.ContextMenu>
+                    <ContextMenu>
+                        <ContextMenu.ItemsSource>
+                            <CompositeCollection>
+                                <MenuItem Header="원상복구" Click="MenuItem_OnClick"></MenuItem>
+                            </CompositeCollection>
+                        </ContextMenu.ItemsSource>
+                    </ContextMenu>
+                </WrapPanel.ContextMenu>
             </WrapPanel>
         </ScrollViewer>
         <Button Grid.Row="1" Grid.Column="1" Click="DrawLots" Margin="0,10,0,10">

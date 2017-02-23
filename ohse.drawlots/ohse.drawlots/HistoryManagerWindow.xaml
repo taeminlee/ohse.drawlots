@@ -5,9 +5,35 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ohse.drawlots"
         mc:Ignorable="d"
-        Title="HistoryManagerWindow" Height="307.479" Width="562.604" Loaded="Window_Loaded">
-    <Window.Resources>
-        <CollectionViewSource x:Key="historyViewSource" d:DesignSource="{d:DesignInstance {x:Type local:history}, CreateList=True}"/>
-    </Window.Resources>
-    <Grid DataContext="{StaticResource historyViewSource}"/>
+        Title="HistoryManagerWindow" Height="720" Width="1024"  FontSize="24"
+        Loaded="Window_Loaded">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="4*"/>
+        </Grid.ColumnDefinitions>
+        
+        <ListBox Name="classList" SelectionMode="Single" DisplayMemberPath="class1" Grid.Column="0" SelectionChanged="ClassList_OnSelectionChanged"  Margin="10">
+        </ListBox>
+        <DataGrid Name="studentGrid" Grid.Column="1" Margin="10" IsReadOnly="True" CanUserAddRows="False" CanUserDeleteRows="False" SelectionMode="Single" SelectionChanged="StudentGrid_OnSelectionChanged" AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="번호" Binding="{Binding Path=num}"/>
+                <DataGridTextColumn Header="이름" Binding="{Binding Path=name}"/>
+                <DataGridTextColumn Header="발표횟수" Binding="{Binding Path=count}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <DataGrid Name="historyGrid" Grid.Column="2" Margin="10" IsReadOnly="True" CanUserAddRows="False" CanUserDeleteRows="True" SelectionMode="Single" AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="발표일시" Binding="{Binding Path=date}"/>
+                <DataGridTemplateColumn Header="제거">
+                    <DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate>
+                        <Button x:Name="btnEdit" FontSize="15" Content="제거" Height="24" Width="120" Click="btnEdit_Click"/>
+                    </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
 </Window>

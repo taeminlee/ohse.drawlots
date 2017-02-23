@@ -67,7 +67,7 @@ namespace ohse.drawlots
                     {
                         cid = S.DB.@class.Local.Count,
                         class1 = S.DB.@class.Local.Count + 1,
-                        year = 2017
+                        year = DateTime.Now.Year
                     });
                     for (int j = 0; j < 30; j++)
                     {
@@ -94,7 +94,7 @@ namespace ohse.drawlots
 
         private string GetRandomName()
         {
-            string[] names = new[] {"이태민", "홍길동", "권지용", "오세림", "이규화", "이서화"};
+            string[] names = new[] {"이순신", "홍길동", "아무개"};
             return names[rand.Next(names.Length)];
         }
 
@@ -337,6 +337,7 @@ namespace ohse.drawlots
                     var hl = GetHistories();
                     var h = hl.FirstOrDefault(history => history.sid == s.sid);
                     if (h != null) S.DB.history.Local.Remove(h);
+                    S.DB.SaveChanges();
                     LoadStudents();
                 }
                 else if (cObj is @group)
@@ -349,18 +350,17 @@ namespace ohse.drawlots
 
         private void OpenStudentManagement(object sender, RoutedEventArgs e)
         {
-            LoginWindow lw = new LoginWindow() {nextWindow = new StudentManagerWindow()};
-            lw.ShowDialog();
+            new LoginWindow() {nextWindow = new StudentManagerWindow()}.ShowDialog();
         }
 
         private void OpenGroupManagement(object sender, RoutedEventArgs e)
         {
-            new GroupManagerWindow().ShowDialog();
+            new LoginWindow() { nextWindow = new GroupManagerWindow() }.ShowDialog();
         }
 
         private void OpenHistoryManagement(object sender, RoutedEventArgs e)
         {
-            new HistoryManagerWindow().ShowDialog();
+            new LoginWindow() { nextWindow = new HistoryManagerWindow() }.ShowDialog();
         }
 
         private void MainWindow_OnClosing(object sender, CancelEventArgs e)
@@ -368,8 +368,26 @@ namespace ohse.drawlots
             Application.Current.Shutdown();
         }
 
-        
 
-        
+        private void NewStage(object sender, RoutedEventArgs e)
+        {
+            if (cid.HasValue == false) return;
+            LoginWindow lw = new LoginWindow() {nextFunc = () =>
+            {
+                if (MessageBox.Show("새로운 판을 구성합니다. 기존의 발표 기록은 유지됩니다. 계속 진행하시겠습니까?", "주의", MessageBoxButton.YesNo) ==
+                    MessageBoxResult.Yes)
+                {
+                    S.DB.forget.Add(new forget()
+                    {
+                        cid = cid.Value,
+                        datetime = DateTime.Now
+                    });
+                    S.DB.SaveChanges();
+                    LoadStudents();
+                }
+                return true;
+            }};
+            lw.ShowDialog();
+        }
     }
 }

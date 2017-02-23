@@ -20,6 +20,7 @@ namespace ohse.drawlots
     public partial class LoginWindow : Window
     {
         public Window nextWindow { get; set; } = new MainWindow();
+        public Func<bool> nextFunc { get; set; } = null;
 
         public LoginWindow()
         {
@@ -42,7 +43,14 @@ namespace ohse.drawlots
         {
             if (PW.Password == "tndjq1")
             {
-                nextWindow.Show();
+                if (nextFunc != null)
+                {
+                    nextFunc();
+                }
+                else
+                {
+                    nextWindow.Show();
+                }
                 this.Close();
             }
             else
