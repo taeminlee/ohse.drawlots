@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.Entity;
 using System.Linq;
+using System.Media;
 using System.Reflection;
 using System.Text;
 using System.Threading;
@@ -30,6 +31,8 @@ namespace ohse.drawlots
         Random rand = new Random();
         private object cObj = null;
         private List<@group> pickedGroups = new List<@group>();
+        SoundPlayer tick = new SoundPlayer(Properties.Resources.tick);
+        SoundPlayer applause = new SoundPlayer(Properties.Resources.appluase);
 
         private int? cid
         {
@@ -46,6 +49,7 @@ namespace ohse.drawlots
             InitDB();
             GenerateRandomData();
             InitClassComboBox();
+
         }
 
         private void InitDB()
@@ -214,7 +218,8 @@ namespace ohse.drawlots
             if (obj is student)
             {
                 student s = ((student) obj);
-                return $"{s.num:D2}. {s.name}";
+                int cnt = S.DB.history.Count(history => history.sid == s.sid);
+                return $"{s.num:D2}. {s.name} ({cnt})";
             }
             if (obj is @group)
             {
@@ -236,6 +241,7 @@ namespace ohse.drawlots
                     duration++;
                     Dispatcher.BeginInvoke((Action) (() =>
                     {
+                        tick.Play();
                         var s = sPool[rand.Next(sPool.Length)];
                         Result.Content = GetName(s);
                         Result.Foreground = PickBrush();
@@ -247,6 +253,7 @@ namespace ohse.drawlots
                     {
                         Result.Dispatcher.BeginInvoke(DispatcherPriority.Send, (Action) (() =>
                         {
+                            applause.Play();
                             dbDelegate.DynamicInvoke();
                             Result.Content = GetName(rst);
                             Result.Foreground = Brushes.Black;
