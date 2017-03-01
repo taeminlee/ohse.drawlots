@@ -13,9 +13,9 @@
             <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
+            <ColumnDefinition Width="4*"/>
             <ColumnDefinition Width="100"/>
-            <ColumnDefinition/>
+            <ColumnDefinition Width="3*"/>
         </Grid.ColumnDefinitions>
         <StackPanel Orientation="Horizontal">
             <Label>반 선택 :</Label>
@@ -28,8 +28,8 @@
             <Button Margin="5,0,0,0" Click="OpenHistoryManagement">기록 관리</Button>
             <Button Margin="5,0,0,0" Click="NewStage">판 새로 짜기</Button>
         </StackPanel>
-        <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-            <WrapPanel Margin="10" Background="BlanchedAlmond" Name="NamePanel">
+        <Viewbox Grid.Row="1">
+            <WrapPanel Margin="10" Background="BlanchedAlmond" Name="NamePanel" Width="800">
                 <WrapPanel.ContextMenu>
                     <ContextMenu Name="studentCM">
                         <ContextMenu.ItemsSource>
@@ -40,7 +40,10 @@
                     </ContextMenu>
                 </WrapPanel.ContextMenu>
             </WrapPanel>
-        </ScrollViewer>
+        </Viewbox>
+        <!--<ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+            
+        </ScrollViewer>-->
         <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
             <WrapPanel Margin="10" Background="Lavender" Name="GroupPanel">
                 <WrapPanel.ContextMenu>
