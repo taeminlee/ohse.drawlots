@@ -12,10 +12,19 @@ namespace ohse.drawlots
     public partial class StudentManagerWindow : Window
     {
         private bool addFlag;
+        private List<student> students;
+        private List<@class> classes;
+        private Dictionary<@class, ObservableCollection<student>> classStudents = new Dictionary<@class, ObservableCollection<student>>();
 
         public StudentManagerWindow()
         {
             InitializeComponent();
+            students = S.DB.student.ToList();
+            classes = S.DB.@class.ToList();
+            classes.ForEach(@class =>
+            {
+                classStudents.Add(@class, new ObservableCollection<student>(students.Where(student => student.cid == @class.cid)));
+            });
         }
 
         private int cid
@@ -31,54 +40,49 @@ namespace ohse.drawlots
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            dgClass.ItemsSource = S.DB.@class.Local;
+            dgClass.ItemsSource = classes;
         }
 
         private void DgClass_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (addFlag)
-                if (
-                    MessageBox.Show("수정된 학생 명부를 저장하고 계속 진행하시겠습니까? 아니요를 누를 경우 작업한 내역이 유실됩니다.", "경고",
-                        MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-                    Save();
             var c = dgClass.SelectedItem as @class;
             if (c != null)
             {
-                dgStudent.ItemsSource =
-                    new ObservableCollection<student>(S.DB.student.Local.Where(student => student.cid == c.cid));
-                addFlag = false;
+                if (classStudents.ContainsKey(c))
+                {
+                    dgStudent.ItemsSource = classStudents[c];
+                    addFlag = false;
+                }
             }
         }
 
         private void DgClass_OnAddingNewItem(object sender, AddingNewItemEventArgs e)
         {
+            e.NewItem = new @class();
             var c = e.NewItem as @class;
             if (c != null)
             {
-                var lc = S.DB.@class.LastOrDefault();
+                var lc = classes.LastOrDefault();
                 if (lc == null)
                     c.cid = 0;
                 else
                     c.cid = lc.cid + 1;
                 c.year = GetLastYear();
+                classStudents.Add(c, new ObservableCollection<student>());
             }
         }
 
         private void Save()
         {
-            var cs = GetClasses();
+            var cs = classes;
             var rCS = S.DB.@class.Local.Where(c => cs.Any(lc => lc.cid == c.cid) == false).ToArray();
             var aCS = cs.Where(c => S.DB.@class.Local.Any(dbC => dbC.cid == c.cid) == false).ToArray();
             S.DB.@class.RemoveRange(rCS);
             S.DB.@class.AddRange(aCS);
 
-            var ss = GetStudents();
-            var rSS =
-                S.DB.student.Local.Where(
-                    s => (s.cid == cid) && (ss.Any(ls => (ls.cid == s.cid) && (ls.sid == s.sid)) == false)).ToArray();
-            var aSS =
-                ss.Where(s => S.DB.student.Local.Any(dbS => (dbS.cid == s.cid) && (dbS.sid == s.sid)) == false)
-                    .ToArray();
+            var ss = classStudents.SelectMany(pair => pair.Value);
+            var rSS = S.DB.student.Local.Where(s => ss.Any(ls => ls.sid == s.sid) == false).ToArray();
+            var aSS = ss.Where(s => S.DB.student.Local.Any(dbS => dbS.sid == s.sid) == false).ToArray();
             S.DB.student.RemoveRange(rSS);
             S.DB.student.AddRange(aSS);
 
