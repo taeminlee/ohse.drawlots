@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ohse.drawlots"
         mc:Ignorable="d"
-        Title="ohse.drawlots aka 제비 뽑기" Height="460.142" Width="784.049" FontSize="24" WindowState="Maximized" Closing="MainWindow_OnClosing">
+        Title="ohse.drawlots aka 제비 뽑기" Height="460.142" Width="784.049" FontSize="24" WindowState="Maximized" Closing="MainWindow_OnClosing" Icon="dice.ico">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>

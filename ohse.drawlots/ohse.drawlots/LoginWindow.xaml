@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ohse.drawlots"
         mc:Ignorable="d"
+        Icon="dice.ico"
         Title="LoginWindow" Height="137.447" Width="350.213">
     
     <Grid>

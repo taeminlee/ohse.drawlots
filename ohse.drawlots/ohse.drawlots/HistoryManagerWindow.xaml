@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ohse.drawlots"
         mc:Ignorable="d"
+        Icon="dice.ico"
         Title="HistoryManagerWindow" Height="720" Width="1024"  FontSize="24"
         Loaded="Window_Loaded">
     <Grid>

@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:ohse.drawlots"
         xmlns:dd="urn:gong-wpf-dragdrop"
         mc:Ignorable="d"
+        Icon="dice.ico"
         Title="GroupManagerWindow" Height="768" Width="1024" FontSize="24"
         Closed="GroupManagerWindow_OnClosed"
         Loaded="GroupManagerWindow_OnLoaded">

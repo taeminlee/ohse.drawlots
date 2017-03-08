@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ohse.drawlots"
         mc:Ignorable="d"
+        Icon="dice.ico"
         Title="학생 관리" Height="600" Width="600" Loaded="Window_Loaded" FontSize="24">
     <Window.Resources>
         <CollectionViewSource x:Key="classViewSource" d:DesignSource="{d:DesignInstance {x:Type local:class}, CreateList=True}"/>
