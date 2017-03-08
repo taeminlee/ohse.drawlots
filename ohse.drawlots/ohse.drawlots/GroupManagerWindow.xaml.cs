@@ -20,9 +20,9 @@ namespace ohse.drawlots
     /// </summary>
     public partial class GroupManagerWindow : Window
     {
-        private int cid => ((@class) classList.SelectedItem).cid;
-        private student[] students;
-        private ObservableCollection<student> localStudents;
+        private int cid => ((@class2) classList.SelectedItem).cid;
+        private student2[] students;
+        private ObservableCollection<student2> localStudents;
 
         public GroupManagerWindow()
         {
@@ -38,7 +38,7 @@ namespace ohse.drawlots
         {
             AddBtn.IsEnabled = true;
             students = S.DB.student.Local.Where(student => student.cid == cid && student.gid == -1).ToArray();
-            localStudents = new ObservableCollection<student>(students);
+            localStudents = new ObservableCollection<student2>(students);
             studentList.ItemsSource = localStudents;
             groupPanel.Children.Clear();
             foreach (var g in S.DB.group.Local.Where(g => g.cid == cid))
@@ -47,7 +47,7 @@ namespace ohse.drawlots
             }
         }
 
-        private void AddGroupPanel(@group g)
+        private void AddGroupPanel(@group2 g)
         {
             var gp = new GroupPanelItem(g);
             gp.RemoveGroup += (o, students1) =>
@@ -66,13 +66,13 @@ namespace ohse.drawlots
         {
             string f = e.Data.GetFormats().First();
             var data = e.Data.GetData(f);
-            if (data is student) // single
+            if (data is student2) // single
             {
                 UpdateInfo(data);
             }
-            else if (data is IEnumerable<student>)
+            else if (data is IEnumerable<student2>)
             {
-                foreach (var s in (IEnumerable<student>)data)
+                foreach (var s in (IEnumerable<student2>)data)
                 {
                     UpdateInfo(s);
                 }
@@ -81,7 +81,7 @@ namespace ohse.drawlots
 
         private void UpdateInfo(object data)
         {
-            if (data is student)
+            if (data is student2)
             {
                 ((student)data).gid = -1;
             }
@@ -95,7 +95,7 @@ namespace ohse.drawlots
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
             int k = S.DB.group.Where(group => group.cid == cid).Select(group => group.gid).Max();
-            var g = new @group()
+            var g = new @group2()
             {
                 cid = cid,
                 gid = S.DB.group.Where(group => group.cid == cid).Select(group => group.gid).Max() + 1,

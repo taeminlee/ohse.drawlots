@@ -30,7 +30,7 @@ namespace ohse.drawlots
         
         Random rand = new Random();
         private object cObj = null;
-        private List<@group> pickedGroups = new List<@group>();
+        private List<@group2> pickedGroups = new List<@group2>();
         SoundPlayer tick = new SoundPlayer(Properties.Resources.tick);
         SoundPlayer applause = new SoundPlayer(Properties.Resources.appluase);
 
@@ -38,7 +38,7 @@ namespace ohse.drawlots
         {
             get
             {
-                @class c = this.ClassComboBox.SelectedItem as @class;
+                @class2 c = this.ClassComboBox.SelectedItem as @class2;
                 return c?.cid;
             }
         }
@@ -67,7 +67,7 @@ namespace ohse.drawlots
             {
                 for (int i = 0; i < 10; i++)
                 {
-                    S.DB.@class.Local.Add(new @class()
+                    S.DB.@class.Local.Add(new @class2()
                     {
                         cid = S.DB.@class.Local.Count,
                         class1 = S.DB.@class.Local.Count + 1,
@@ -75,7 +75,7 @@ namespace ohse.drawlots
                     });
                     for (int j = 0; j < 30; j++)
                     {
-                        S.DB.student.Local.Add(new student()
+                        S.DB.student.Local.Add(new student2()
                         {
                             cid = S.DB.@class.Local.Count - 1,
                             sid = S.DB.student.Local.Count,
@@ -84,7 +84,7 @@ namespace ohse.drawlots
                             num = j + 1
                         });
                         if(j%5 == 0)
-                            S.DB.group.Local.Add(new @group()
+                            S.DB.group.Local.Add(new @group2()
                             {
                                 cid = S.DB.@class.Local.Count - 1,
                                 gid = j/5,
@@ -117,7 +117,7 @@ namespace ohse.drawlots
         {
             LoadEntities(NamePanel, GetClassStudents(), (o) =>
             {
-                return GetHistories().Exists(history => history.sid == ((student)o).sid);
+                return GetHistories().Exists(history => history.sid == ((student2)o).sid);
             });
         }
 
@@ -155,18 +155,18 @@ namespace ohse.drawlots
             }
         }
 
-        private student[] GetClassStudents() => S.DB.student.Where(student => student.cid == cid).ToArray();
+        private student2[] GetClassStudents() => S.DB.student.Where(student => student.cid == cid).ToArray();
         
-        private @group[] GetClassGroups() => S.DB.group.Where(group => group.cid == cid).ToArray();
+        private @group2[] GetClassGroups() => S.DB.group.Where(group => group.cid == cid).ToArray();
 
         private void DrawLots(object sender, RoutedEventArgs e)
         {
-            student[] sPool = GetStudentPool();
-            student s = sPool[rand.Next(sPool.Length)];
+            student2[] sPool = GetStudentPool();
+            student2 s = sPool[rand.Next(sPool.Length)];
 
             ShowDynamicResults(sPool, s, new Action(() =>
             {
-                S.DB.history.Add(new history()
+                S.DB.history.Add(new history2()
                 {
                     sid = s.sid,
                     cid = s.cid,
@@ -178,8 +178,8 @@ namespace ohse.drawlots
 
         private void SelGroup(object sender, RoutedEventArgs e)
         {
-            @group[] gPool = GetGroupPool();
-            @group g = gPool[rand.Next(gPool.Length)];
+            @group2[] gPool = GetGroupPool();
+            @group2 g = gPool[rand.Next(gPool.Length)];
 
             ShowDynamicResults(gPool, g, new Action(() =>
             {
@@ -192,18 +192,18 @@ namespace ohse.drawlots
             }));
         }
 
-        private void SelectStudentGroup(@group g)
+        private void SelectStudentGroup(@group2 g)
         {
-            student[] ss = S.DB.student.Where(s => s.cid == cid && s.gid == g.gid).ToArray();
+            student2[] ss = S.DB.student.Where(s => s.cid == cid && s.gid == g.gid).ToArray();
             var panel = NamePanel;
             List<object> objs = new List<object>();
             foreach (object obj in panel.Children)
             {
                 if (obj is ToggleButton)
                 {
-                    if (((ToggleButton) obj).Tag is student)
+                    if (((ToggleButton) obj).Tag is student2)
                     {
-                        student s = ((ToggleButton) obj).Tag as student;
+                        student2 s = ((ToggleButton) obj).Tag as student2;
                         ((ToggleButton) obj).IsChecked = ss.Contains(s);
                     }
                 }
@@ -215,21 +215,21 @@ namespace ohse.drawlots
 
         private string GetName(object obj)
         {
-            if (obj is student)
+            if (obj is student2)
             {
-                student s = ((student) obj);
+                student2 s = ((student2) obj);
                 int cnt = S.DB.history.Count(history => history.sid == s.sid);
                 return $"{s.num:D2}. {s.name} ({cnt})";
             }
-            if (obj is @group)
+            if (obj is @group2)
             {
-                @group g = ((@group) obj);
+                @group2 g = ((@group2) obj);
                 return $"{g.name}";
             }
             return "";
         }
 
-        private void ShowDynamicResults(object[] sPool, object rst, Delegate dbDelegate, Delegate callback)
+        private void ShowDynamicResults(object[] sPool, object rst, Action dbDelegate, Action callback)
         {
             if(t != null)
                 t.Dispose();
@@ -251,14 +251,14 @@ namespace ohse.drawlots
                 {
                     if (Result.Dispatcher.CheckAccess() == false)
                     {
-                        Result.Dispatcher.BeginInvoke(DispatcherPriority.Send, (Action) (() =>
+                        Result.Dispatcher.Invoke(DispatcherPriority.Send, (Action) (() =>
                         {
                             applause.Play();
-                            dbDelegate.DynamicInvoke();
+                            dbDelegate.Invoke();
                             Result.Content = GetName(rst);
                             Result.Foreground = Brushes.Black;
                             t.Dispose();
-                            callback.DynamicInvoke();
+                            callback.Invoke();
                         }));
                     }
                 }
@@ -281,14 +281,14 @@ namespace ohse.drawlots
             return result;
         }
 
-        private student[] GetStudentPool()
+        private student2[] GetStudentPool()
         {
-            return GetObjectPool(NamePanel, GetClassStudents(), o => GetHistories().Exists(history => history.sid == ((student)o).sid)).Cast<student>().ToArray();
+            return GetObjectPool(NamePanel, GetClassStudents(), o => GetHistories().Exists(history => history.sid == ((student2)o).sid)).Cast<student2>().ToArray();
         }
 
-        private @group[] GetGroupPool()
+        private @group2[] GetGroupPool()
         {
-            return GetObjectPool(GroupPanel, GetClassGroups(), o => pickedGroups.Exists(g => g.Equals(o))).Cast<@group>().ToArray();
+            return GetObjectPool(GroupPanel, GetClassGroups(), o => pickedGroups.Exists(g => g.Equals(o))).Cast<@group2>().ToArray();
         }
 
         private List<object> GetObjectPool(WrapPanel panel, object[] classObjs, Func<object, bool> existFunc)
@@ -308,7 +308,7 @@ namespace ohse.drawlots
             if (objs.Count == 0)
                 objs.AddRange(classObjs);
 
-            List<history> histories = GetHistories();
+            List<history2> histories = GetHistories();
 
             if (objs.TrueForAll(obj => existFunc(obj)) == false)
             {
@@ -318,11 +318,11 @@ namespace ohse.drawlots
             return objs;
         }
 
-        private List<history> GetHistories()
+        private List<history2> GetHistories()
         {
             DateTime? lastTime = S.DB.forget.Local.LastOrDefault(forget => forget.cid == this.cid.Value)?.datetime;
 
-            List<history> histories = new List<history>();
+            List<history2> histories = new List<history2>();
             if (lastTime != null)
             {
                 histories = S.DB.history.Local.Where(history => history.date > lastTime && history.cid == cid.Value).ToList();
@@ -338,7 +338,7 @@ namespace ohse.drawlots
         {
             if (cObj != null)
             {
-                if (cObj is student)
+                if (cObj is student2)
                 {
                     student s = (student) cObj;
                     var hl = GetHistories();
@@ -347,9 +347,9 @@ namespace ohse.drawlots
                     S.DB.SaveChanges();
                     LoadStudents();
                 }
-                else if (cObj is @group)
+                else if (cObj is @group2)
                 {
-                    pickedGroups.Remove((group) cObj);
+                    pickedGroups.Remove((group2) cObj);
                     LoadGroups();
                 }
             }
@@ -384,7 +384,7 @@ namespace ohse.drawlots
                 if (MessageBox.Show("새로운 판을 구성합니다. 기존의 발표 기록은 유지됩니다. 계속 진행하시겠습니까?", "주의", MessageBoxButton.YesNo) ==
                     MessageBoxResult.Yes)
                 {
-                    S.DB.forget.Add(new forget()
+                    S.DB.forget.Add(new forget2()
                     {
                         cid = cid.Value,
                         datetime = DateTime.Now

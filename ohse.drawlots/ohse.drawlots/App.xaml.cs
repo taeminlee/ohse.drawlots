@@ -13,5 +13,9 @@ namespace ohse.drawlots
     /// </summary>
     public partial class App : Application
     {
+        public App()
+        {
+            S.Migration();
+        }
     }
 }

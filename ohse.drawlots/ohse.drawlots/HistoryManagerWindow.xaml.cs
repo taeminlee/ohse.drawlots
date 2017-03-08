@@ -27,7 +27,7 @@ namespace ohse.drawlots
     /// </summary>
     public partial class HistoryManagerWindow : Window
     {
-        private int cid => ((@class)classList.SelectedItem).cid;
+        private int cid => ((@class2)classList.SelectedItem).cid;
         private int sid;
         private StudentHistory[] shs;
 
@@ -76,7 +76,7 @@ namespace ohse.drawlots
 
         private void btnEdit_Click(object sender, RoutedEventArgs e)
         {
-            var history = (sender as Button).DataContext as history;
+            var history = (sender as Button).DataContext as history2;
             S.DB.history.Remove(history);
             S.DB.SaveChanges();
             LoadStudent();

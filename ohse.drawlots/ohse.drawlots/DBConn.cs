@@ -19,7 +19,7 @@ namespace ohse.drawlots
 
     internal static class DBConn
     {
-        internal static string GetConnStr()
+        internal static string GetMigrationPath()
         {
             //To get the location the assembly normally resides on disk or the install directory
             string path = System.Reflection.Assembly.GetExecutingAssembly().Location;
@@ -28,8 +28,29 @@ namespace ohse.drawlots
             var directory = System.IO.Path.GetDirectoryName(path);
 
             // Specify the provider name, server and database.
-            string providerName = "System.Data.SQLite.EF6";
+            string serverName = directory + @"\migration.db";
+
+            return serverName;
+        }
+
+        internal static string GetPath()
+        {
+            //To get the location the assembly normally resides on disk or the install directory
+            string path = System.Reflection.Assembly.GetExecutingAssembly().Location;
+
+            //once you have the path you get the directory with:
+            var directory = System.IO.Path.GetDirectoryName(path);
+
+            // Specify the provider name, server and database.
             string serverName = directory + @"\database.db";
+
+            return serverName;
+        }
+
+        internal static string GetConnStr(string serverName)
+        {
+            // Specify the provider name, server and database.
+            string providerName = "System.Data.SQLite.EF6";
             //string databaseName = "hanriver";
 
             // Initialize the connection string builder for the
